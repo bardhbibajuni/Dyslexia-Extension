@@ -1,1 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dyslexia Helper</title>
+    <link rel="stylesheet" href="popup.css" />
+    <script src="popup.js" defer></script>
+</head>
+
+<body>
+    <main class="popup-container">
+
+        <header class="header">
+            <div class="header-top">
+                <div>
+                    <h1 class="main-title">Dyslexia Extension</h1>
+                    <p class="subtitle">Make any website easier to read.</p>
+                </div>
+                <span class="badge">Beta</span>
+            </div>
+            <p class="header-note">
+                Adjust the font, spacing and background once – we’ll remember your preferences.
+            </p>
+        </header>
+
+
+        <section class="section">
+            <div class="section-header">
+                <div class="section-title-group">
+                    <h2>Extension status</h2>
+                    <p class="section-description">
+                        Turn the helper on or off for all sites.
+                    </p>
+                </div>
+                <div class="toggle">
+                    <div class="toggle-off">OFF</div>
+                    <div class="toggle-on">ON</div>
+                </div>
+            </div>
+            <div class="hint-row">
+                <span class="hint-dot"></span>
+                <span class="hint-text">Tip: start by turning it ON, then tweak the options below.</span>
+            </div>
+        </section>
+
+
+        <section class="section">
+            <div class="section-header">
+                <div class="section-title-group">
+                    <h2>Font style</h2>
+                    <p class="section-description">
+                        Dyslexia-friendly fonts like <strong>OpenDyslexic</strong> and <strong>Lexend</strong>
+                        can improve readability.
+                    </p>
+                </div>
+            </div>
+
+            <label class="field-label" for="fontSelect">Choose a font</label>
+            <select id="fontSelect" class="dropdown">
+                <option>Original Font</option>
+                <option>OpenDyslexic</option>
+                <option>Lexend</option>
+                <option>Comic Sans</option>
+                <option>Arial</option>
+            </select>
+
+            <div class="preview-box font-preview">
+                <p class="preview-label">Font preview</p>
+                <p class="preview-text" id="fontPreviewText">
+                    Aa Bb Cc Dd Ee
+                </p>
+                <p class="preview-subtext">
+                    This is how body text will look with the selected font.
+                </p>
+            </div>
+        </section>
+
+
+    </main>
+</body>
+
+</html>
