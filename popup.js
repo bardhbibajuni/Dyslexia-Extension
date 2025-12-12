@@ -106,3 +106,122 @@ function applySettingsToUI() {
     updateWordPreview();
     updateBgUI();
 }
+ function setupSlider(bar, circle, maxValue, initialValue, onChange) {
+    let currentValue = initialValue || 0;
+
+    function positionCircle() {
+        const rect = bar.getBoundingClientRect();
+        const knobWidth = circle.offsetWidth || 24;
+        const maxX = rect.width - knobWidth;
+        const ratio = maxValue ? currentValue / maxValue : 0;
+        circle.style.left = `${maxX * ratio}px`;
+    }
+
+    positionCircle();
+
+    bar.addEventListener("click", e => {
+        const rect = bar.getBoundingClientRect();
+        let x = e.clientX - rect.left;
+
+        if (x < 0) x = 0;
+        if (x > rect.width) x = rect.width;
+
+        currentValue = Math.round((x / rect.width) * maxValue);
+        onChange(currentValue);
+        positionCircle();
+    });
+
+    return {
+        setValue(value) {
+            currentValue = value;
+            positionCircle();
+        }
+    };
+}
+
+function saveSettingsToStorage() {
+    chrome.storage.sync.set(currentSettings);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    toggleEl = document.querySelector(".toggle");
+    fontSelectEl = document.querySelector(".dropdown");
+
+    const sliderBars = document.querySelectorAll(".slider-bar");
+    const sliderCircles = document.querySelectorAll(".slider-circle");
+
+    letterBar = sliderBars[0];
+    wordBar = sliderBars[1];
+    letterCircle = sliderCircles[0];
+    wordCircle = sliderCircles[1];
+
+    fontPreviewText = document.getElementById("fontPreviewText");
+    letterPreviewText = document.getElementById("letterSpacingPreview");
+    wordPreviewText = document.getElementById("wordSpacingPreview");
+
+    colorOptions = document.querySelectorAll(".color-option");
+
+    resetBtn = document.querySelector(".btn-reset");
+    saveBtn = document.querySelector(".btn-save");
+
+    chrome.storage.sync.get(DEFAULT_SETTINGS, stored => {
+        currentSettings = { ...DEFAULT_SETTINGS, ...stored };
+
+        letterSliderCtrl = setupSlider(
+            letterBar,
+            letterCircle,
+            10,
+            currentSettings.letterSpacing,
+            value => {
+                currentSettings.letterSpacing = value;
+                updateLetterPreview();
+            }
+        );
+
+        wordSliderCtrl = setupSlider(
+            wordBar,
+            wordCircle,
+            30,
+            currentSettings.wordSpacing,
+            value => {
+                currentSettings.wordSpacing = value;
+                updateWordPreview();
+            }
+        );
+
+        applySettingsToUI();
+    });
+
+    toggleEl.addEventListener("click", () => {
+        currentSettings.enabled = !currentSettings.enabled;
+        updateToggleUI();
+        saveSettingsToStorage();
+    });
+
+    fontSelectEl.addEventListener("change", () => {
+        currentSettings.font =
+            fontSelectEl.options[fontSelectEl.selectedIndex].text.trim();
+        updateFontUI();
+        saveSettingsToStorage();
+    });
+
+    colorOptions.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const label = btn.textContent.trim();
+            currentSettings.bgColor = BG_COLORS[label] || "#ffffff";
+            currentSettings.bgEnabled = label !== "White";
+            updateBgUI();
+            saveSettingsToStorage();
+        });
+    });
+
+    resetBtn.addEventListener("click", () => {
+        currentSettings = { ...DEFAULT_SETTINGS };
+        applySettingsToUI();
+        saveSettingsToStorage();
+    });
+
+    saveBtn.addEventListener("click", () => {
+        saveSettingsToStorage();
+    });
+});
