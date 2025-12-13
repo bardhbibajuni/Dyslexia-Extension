@@ -1,3 +1,43 @@
+
+
+
+(() => {
+    // ky kod lejon perdorimin e fontave te programit nga cdo device
+    if (document.getElementById("dyslexia-fontfaces")) return;
+
+    const dyslexicUrl = chrome.runtime.getURL("fonts/OpenDyslexic-Regular.otf");
+    const lexendUrl = chrome.runtime.getURL("fonts/Lexend-Regular.ttf");
+
+    const css = `
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("${dyslexicUrl}") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Lexend";
+  src: url("${lexendUrl}") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+  `.trim();
+
+    const style = document.createElement("style");
+    style.id = "dyslexia-fontfaces";
+    style.textContent = css;
+    document.documentElement.appendChild(style);
+})();
+
+
+
+
+
+
+
+
+
+
 const DEFAULT_SETTINGS = {
     enabled: false,
     font: "Original Font",
